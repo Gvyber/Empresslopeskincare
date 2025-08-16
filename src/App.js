@@ -1,9 +1,77 @@
 import React, { useState } from 'react';
-import { User, MessageSquare, Book, Home, Loader, ChevronLeft, CheckCircle, XCircle, Mail } from 'lucide-react';
 
 // Main App Component
-const App = () => { // Corrected: Removed "=>" here
+const App = () => {
   const [currentPage, setCurrentPage] = useState('home');
+
+  // Inline SVG Icons (replacing lucide-react)
+  const HomeIcon = ({ size = 20, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`inline-block mr-1 ${className}`}>
+      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+      <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    </svg>
+  );
+
+  const MessageSquareIcon = ({ size = 20, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`inline-block mr-1 ${className}`}>
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  );
+
+  const BookIcon = ({ size = 20, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`inline-block mr-1 ${className}`}>
+      <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"></path>
+    </svg>
+  );
+
+  const UserIcon = ({ size = 24, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+      <circle cx="12" cy="7" r="4"></circle>
+    </svg>
+  );
+
+  const LoaderIcon = ({ size = 20, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <line x1="12" y1="2" x2="12" y2="6"></line>
+      <line x1="12" y1="18" x2="12" y2="22"></line>
+      <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+      <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+      <line x1="2" y1="12" x2="6" y2="12"></line>
+      <line x1="18" y1="12" x2="22" y2="12"></line>
+      <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+      <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+    </svg>
+  );
+
+  const ChevronLeftIcon = ({ size = 20, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <polyline points="15 18 9 12 15 6"></polyline>
+    </svg>
+  );
+
+  const CheckCircleIcon = ({ size = 48, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+      <polyline points="22 4 12 14.01 9 11.01"></polyline>
+    </svg>
+  );
+
+  const XCircleIcon = ({ size = 48, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="15" y1="9" x2="9" y2="15"></line>
+      <line x1="9" y1="9" x2="15" y2="15"></line>
+    </svg>
+  );
+
+  const MailIcon = ({ size = 32, className = '' }) => (
+    <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+      <polyline points="22,6 12,13 2,6"></polyline>
+    </svg>
+  );
+
 
   // Navigation Components
   const DesktopNav = () => (
@@ -11,13 +79,13 @@ const App = () => { // Corrected: Removed "=>" here
       <div className="text-3xl font-bold text-black font-['Great_Vibes']">EmpressLope Beauty Shop</div>
       <div className="flex space-x-6 text-lg font-medium">
         <button onClick={() => setCurrentPage('home')} className={`text-white hover:text-purple-200 transition-colors ${currentPage === 'home' ? 'text-purple-200 font-semibold' : ''}`}>
-          <Home className="inline-block mr-1" size={20} /> Home
+          <HomeIcon className="inline-block mr-1" size={20} /> Home
         </button>
         <button onClick={() => setCurrentPage('consultation')} className={`text-white hover:text-purple-200 transition-colors ${currentPage === 'consultation' ? 'text-purple-200 font-semibold' : ''}`}>
-          <MessageSquare className="inline-block mr-1" size={20} /> Consultation
+          <MessageSquareIcon className="inline-block mr-1" size={20} /> Consultation
         </button>
         <button onClick={() => setCurrentPage('blog')} className={`text-white hover:text-purple-200 transition-colors ${currentPage === 'blog' ? 'text-purple-200 font-semibold' : ''}`}>
-          <Book className="inline-block mr-1" size={20} /> Blog
+          <BookIcon className="inline-block mr-1" size={20} /> Blog
         </button>
         <button className="text-white hover:text-purple-200 transition-colors">About Us</button>
         {/* Updated Contact button to navigate to new Contact Page */}
@@ -25,7 +93,7 @@ const App = () => { // Corrected: Removed "=>" here
       </div>
       <div className="flex items-center space-x-4">
         <button className="p-2 rounded-full hover:bg-white/20 transition-colors">
-          <User className="text-white" size={24} />
+          <UserIcon className="text-white" size={24} />
         </button>
       </div>
     </nav>
@@ -38,7 +106,7 @@ const App = () => { // Corrected: Removed "=>" here
         {/* Updated Contact button in mobile nav to navigate to new Contact Page */}
         <button onClick={() => setCurrentPage('contact')} className="text-white hover:text-purple-200 transition-colors text-sm font-medium">Contact</button>
         <button className="p-2 rounded-full hover:bg-white/20 transition-colors">
-          <User className="text-white" size={20} />
+          <UserIcon className="text-white" size={20} />
         </button>
       </div>
     </nav>
@@ -52,7 +120,7 @@ const App = () => { // Corrected: Removed "=>" here
           currentPage === 'home' ? 'bg-white text-purple-700 shadow-lg' : 'bg-transparent text-white hover:bg-white/20'
         }`}
       >
-        <Home className="inline-block mr-1" size={16} /> Home
+        <HomeIcon className="inline-block mr-1" size={16} /> Home
       </button>
       <button
         onClick={() => setCurrentPage('consultation')}
@@ -60,7 +128,7 @@ const App = () => { // Corrected: Removed "=>" here
           currentPage === 'consultation' ? 'bg-white text-purple-700 shadow-lg' : 'bg-transparent text-white hover:bg-white/20'
         }`}
       >
-        <MessageSquare className="inline-block mr-1" size={16} /> Consultation
+        <MessageSquareIcon className="inline-block mr-1" size={16} /> Consultation
       </button>
       <button
         onClick={() => setCurrentPage('blog')}
@@ -68,7 +136,7 @@ const App = () => { // Corrected: Removed "=>" here
           currentPage === 'blog' ? 'bg-white text-purple-700 shadow-lg' : 'bg-transparent text-white hover:bg-white/20'
         }`}
       >
-        <Book className="inline-block mr-1" size={16} /> Blog
+        <BookIcon className="inline-block mr-1" size={16} /> Blog
       </button>
     </div>
   );
@@ -310,7 +378,11 @@ const App = () => { // Corrected: Removed "=>" here
       setAiResponse('');
       setErrorMessage('');
 
+      // Added console logs for debugging
+      console.log("handleConsultationSubmit triggered.");
+
       const skinProfileSummary = generateSkinProfileSummary();
+      console.log("Skin Profile Summary:", skinProfileSummary);
 
       const prompt = `Based on the following user skincare profile, please provide a personalized skincare routine and product ingredient recommendations. Structure your response clearly, including:\n\n1. AM Routine (Cleanser, Serum, Moisturizer, SPF)\n2. PM Routine (Cleanser, Treatment, Moisturizer)\n3. Specific Product Ingredient Recommendations (e.g., Hyaluronic Acid, Salicylic Acid, Vitamin C)\n4. General Skincare Tips\n\nKeep the recommendations concise and actionable. Prioritize ingredients and routine steps over specific brand names. Here is the user's profile:\n\n${skinProfileSummary}`;
 
@@ -318,14 +390,10 @@ const App = () => { // Corrected: Removed "=>" here
       let chatHistory = [];
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
-      // --- IMPORTANT CHANGE FOR DEPLOYMENT ---
-      // When deployed to Netlify, `apiKey` is not automatically injected.
-      // We read it from Netlify's environment variables (`REACT_APP_API_KEY`).
-      // During local development (e.g., in Canvas), `process.env.REACT_APP_API_KEY` might be undefined,
-      // so we use a fallback empty string, which Canvas then injects.
       const apiKey = process.env.REACT_APP_API_KEY || "";
-      // --- END IMPORTANT CHANGE ---
+      console.log("API Key being used (first 5 chars):", apiKey.substring(0, 5) + "..."); // Log partial key for security
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+      console.log("API URL:", apiUrl);
 
       let retries = 0;
       const maxRetries = 5;
@@ -338,11 +406,12 @@ const App = () => { // Corrected: Removed "=>" here
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
+          console.log("Fetch response received. Status:", response.status);
 
           if (!response.ok) {
             if (response.status === 429) { // Too Many Requests
               const delay = Math.pow(2, retries) * baseDelay + Math.random() * baseDelay;
-              console.log(`Rate limit hit, retrying in ${delay / 1000}s...`);
+              console.warn(`Rate limit hit, retrying in ${delay / 1000}s... (Attempt ${retries + 1}/${maxRetries})`);
               await new Promise(res => setTimeout(res, delay));
               retries++;
               continue; // Retry the request
@@ -350,36 +419,39 @@ const App = () => { // Corrected: Removed "=>" here
               setErrorMessage(`HTTP error! status: ${response.status}`);
               setModalContent({ type: 'error', message: `Failed to get consultation: HTTP error ${response.status}` });
               setShowModal(true);
-              setIsLoading(false); // Ensure loading is false on direct exit
               break; // Exit loop on critical error
             }
           }
 
           const result = await response.json();
+          console.log("API Response JSON:", result);
+
           if (result.candidates && result.candidates.length > 0 &&
               result.candidates[0].content && result.candidates[0].content.parts &&
               result.candidates[0].content.parts.length > 0) {
             setAiResponse(result.candidates[0].content.parts[0].text);
             setModalContent({ type: 'success', message: 'Your personalized skincare plan is ready!' });
             setShowModal(true);
-            setIsLoading(false); // Ensure loading is false on direct exit
             break; // Exit loop on success
           } else {
             setErrorMessage('Received an empty or malformed response from the AI.');
             setModalContent({ type: 'error', message: 'Failed to get a personalized plan. Please try again.' });
             setShowModal(true);
-            setIsLoading(false); // Ensure loading is false on direct exit
             break; // Exit loop, no retries for malformed response
           }
         } catch (error) {
+          console.error("Fetch error:", error); // Log the actual fetch error
           setErrorMessage(`Failed to get consultation: ${error.message}`);
           setModalContent({ type: 'error', message: `An error occurred: ${error.message}` });
           setShowModal(true);
-          setIsLoading(false); // Ensure loading is false on direct exit
           break; // Exit loop on critical error
+        } finally {
+          setIsLoading(false); // Ensure loading is false on direct exit or after all retries
+          console.log("setIsLoading(false) called in finally block.");
         }
       }
-      if (retries === maxRetries) { // If loop finishes due to max retries without success
+
+      if (retries === maxRetries && !aiResponse && !errorMessage) {
         setErrorMessage('Failed to get consultation after multiple retries. Please try again later.');
         setModalContent({ type: 'error', message: 'The consultation service is temporarily unavailable. Please try again later.' });
         setShowModal(true);
@@ -677,15 +749,7 @@ const App = () => { // Corrected: Removed "=>" here
                 id="waterIntake"
                 label="Water intake/day:"
                 value={lifestyleFactors.dietHydration.waterIntake}
-                onChange={(e) => { // Changed to explicit return for clarity and to resolve potential parsing issue
-                  return setLifestyleFactors(prev => ({
-                    ...prev,
-                    dietHydration: {
-                      ...prev.dietHydration,
-                      waterIntake: e.target.value
-                    }
-                  }));
-                }}
+                onChange={(e) => setLifestyleFactors(prev => ({ ...prev, dietHydration: { ...prev.dietHydration, waterIntake: e.target.value } }))}
                 options={['<1L', '1–2L', '2–3L', '3L+']}
               />
               <SelectField
@@ -769,7 +833,7 @@ const App = () => { // Corrected: Removed "=>" here
           >
             {isLoading ? (
               <>
-                <Loader className="animate-spin mr-2" size={20} /> Generating Recommendation...
+                <LoaderIcon className="animate-spin mr-2" size={20} /> Generating Recommendation...
               </>
             ) : (
               'Get My Skincare Plan'
@@ -799,9 +863,9 @@ const App = () => { // Corrected: Removed "=>" here
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg shadow-xl p-8 max-w-sm w-full text-center">
               {modalContent.type === 'success' ? (
-                <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
+                <CheckCircleIcon size={48} className="text-green-500 mx-auto mb-4" />
               ) : (
-                <XCircle size={48} className="text-red-500 mx-auto mb-4" /> // Corrected: ensure it's a valid JSX element
+                <XCircleIcon size={48} className="text-red-500 mx-auto mb-4" />
               )}
               <h3 className="text-2xl font-bold text-gray-800 mb-4">{modalContent.type === 'success' ? 'Success!' : 'Oops!'}</h3>
               <p className="text-gray-600 mb-6">{modalContent.message}</p>
@@ -813,7 +877,7 @@ const App = () => { // Corrected: Removed "=>" here
                   }
                 }}
                 className={`w-full py-3 rounded-full text-white font-bold text-lg transition-colors duration-300 ${
-                  modalContent.type === 'success' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:hover:bg-red-700'
+                  modalContent.type === 'success' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
                 }`}
               >
                 Close
@@ -826,7 +890,7 @@ const App = () => { // Corrected: Removed "=>" here
           onClick={() => setCurrentPage('home')}
           className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
         >
-          <ChevronLeft size={20} className="mr-2" /> Back to Home
+          <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
         </button>
       </div>
     );
@@ -912,7 +976,7 @@ const App = () => { // Corrected: Removed "=>" here
             onClick={() => setCurrentPage('home')}
             className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
           >
-            <ChevronLeft size={20} className="mr-2" /> Back to Home
+            <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
           </button>
         </div>
       </div>
@@ -930,7 +994,7 @@ const App = () => { // Corrected: Removed "=>" here
         <div className="absolute inset-0 bg-black opacity-40"></div>
         <div className="relative z-10 max-w-xl mx-auto p-6 md:p-8 bg-purple-50/80 rounded-xl shadow-lg my-8 text-center"> {/* Added transparent background to content block */}
           <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center justify-center">
-            <Mail className="mr-3" size={32} /> Contact EmpressLope Beauty Shop
+            <MailIcon className="mr-3" size={32} /> Contact EmpressLope Beauty Shop
           </h2>
           <p className="text-gray-700 text-lg mb-4">
             We'd love to hear from you! For any inquiries, consultations, or feedback, please reach out to us directly via email:
@@ -945,7 +1009,7 @@ const App = () => { // Corrected: Removed "=>" here
             onClick={() => setCurrentPage('home')}
             className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
           >
-            <ChevronLeft size={20} className="mr-2" /> Back to Home
+            <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
           </button>
         </div>
       </div>
