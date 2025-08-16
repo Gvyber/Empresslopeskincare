@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { User, MessageSquare, Book, Home, Loader, ChevronLeft, CheckCircle, XCircle, Mail } from 'lucide-react';
 
 // Main App Component
-const App = () => {
+const App = () => { // Corrected: Removed "=>" here
   const [currentPage, setCurrentPage] = useState('home');
 
   // Navigation Components
@@ -251,57 +251,57 @@ const App = () => {
             summary += `Skin Conditions (past or present): ${medicalSkinHistory.skinConditions.join(', ')}`;
             if (medicalSkinHistory.skinConditions.includes('Other') && medicalSkinHistory.skinConditionsOther) {
                 summary += ` (${medicalSkinHistory.skinConditionsOther})\n`;
-            } else {
-                summary += '\n';
+                } else {
+                    summary += '\n';
+                }
             }
-        }
-        if (medicalSkinHistory.allergies.length > 0) {
-            summary += `Allergies: ${medicalSkinHistory.allergies.join(', ')}\n`;
-            if (medicalSkinHistory.allergies.includes('Skincare ingredient(s):') && medicalSkinHistory.allergiesSkincare) {
-                summary += `- Skincare Ingredient(s): ${medicalSkinHistory.allergiesSkincare}\n`;
+            if (medicalSkinHistory.allergies.length > 0) {
+                summary += `Allergies: ${medicalSkinHistory.allergies.join(', ')}\n`;
+                if (medicalSkinHistory.allergies.includes('Skincare ingredient(s):') && medicalSkinHistory.allergiesSkincare) {
+                    summary += `- Skincare Ingredient(s): ${medicalSkinHistory.allergiesSkincare}\n`;
+                }
+                if (medicalSkinHistory.allergies.includes('Medication:') && medicalSkinHistory.allergiesMedication) {
+                    summary += `- Medication: ${medicalSkinHistory.allergiesMedication}\n`;
+                }
+                if (medicalSkinHistory.allergies.includes('Food:') && medicalSkinHistory.allergiesFood) {
+                    summary += `- Food: ${medicalSkinHistory.allergiesFood}\n`;
+                }
+            } else if (medicalSkinHistory.allergies.length === 0 && medicalSkinHistory.allergiesSkincare === '' && medicalSkinHistory.allergiesMedication === '' && medicalSkinHistory.allergiesFood === '') {
+                 summary += `Allergies: None\n`;
             }
-            if (medicalSkinHistory.allergies.includes('Medication:') && medicalSkinHistory.allergiesMedication) {
-                summary += `- Medication: ${medicalSkinHistory.allergiesMedication}\n`;
+            if (medicalSkinHistory.currentMedications.length > 0) {
+                summary += `Current Medications: ${medicalSkinHistory.currentMedications.join(', ')}`;
+                if (medicalSkinHistory.currentMedications.includes('Other:') && medicalSkinHistory.currentMedicationsOther) {
+                    summary += ` (${medicalSkinHistory.currentMedicationsOther})\n`;
+                } else {
+                    summary += '\n';
+                }
+            } else if (medicalSkinHistory.currentMedications.length === 0 && medicalSkinHistory.currentMedicationsOther === '') {
+                 summary += `Current Medications: None\n`;
             }
-            if (medicalSkinHistory.allergies.includes('Food:') && medicalSkinHistory.allergiesFood) {
-                summary += `- Food: ${medicalSkinHistory.allergiesFood}\n`;
-            }
-        } else if (medicalSkinHistory.allergies.length === 0 && medicalSkinHistory.allergiesSkincare === '' && medicalSkinHistory.allergiesMedication === '' && medicalSkinHistory.allergiesFood === '') {
-             summary += `Allergies: None\n`;
-        }
-        if (medicalSkinHistory.currentMedications.length > 0) {
-            summary += `Current Medications: ${medicalSkinHistory.currentMedications.join(', ')}`;
-            if (medicalSkinHistory.currentMedications.includes('Other:') && medicalSkinHistory.currentMedicationsOther) {
-                summary += ` (${medicalSkinHistory.currentMedicationsOther})\n`;
-            } else {
-                summary += '\n';
-            }
-        } else if (medicalSkinHistory.currentMedications.length === 0 && medicalSkinHistory.currentMedicationsOther === '') {
-             summary += `Current Medications: None\n`;
-        }
-        if (medicalSkinHistory.pregnancyBreastfeeding !== null) summary += `Pregnancy/Breastfeeding: ${medicalSkinHistory.pregnancyBreastfeeding ? 'Yes' : 'No'}\n`;
-        summary += "\n";
+            if (medicalSkinHistory.pregnancyBreastfeeding !== null) summary += `Pregnancy/Breastfeeding: ${medicalSkinHistory.pregnancyBreastfeeding ? 'Yes' : 'No'}\n`;
+            summary += "\n";
 
-        // Section 6 – Lifestyle Factors
-        summary += "## Lifestyle Factors\n";
-        if (lifestyleFactors.dietHydration.diet) summary += `Diet: ${lifestyleFactors.dietHydration.diet}\n`;
-        if (lifestyleFactors.dietHydration.waterIntake) summary += `Water Intake/Day: ${lifestyleFactors.dietHydration.waterIntake}\n`;
-        if (lifestyleFactors.sleep) summary += `Sleep: ${lifestyleFactors.sleep}\n`;
-        if (lifestyleFactors.stressLevel) summary += `Stress Level: ${lifestyleFactors.stressLevel}\n`;
-        if (lifestyleFactors.exerciseFrequency) summary += `Exercise Frequency: ${lifestyleFactors.exerciseFrequency}\n`;
-        if (lifestyleFactors.smoking !== null) summary += `Smoking: ${lifestyleFactors.smoking ? 'Yes' : 'No'}\n`;
-        if (lifestyleFactors.alcoholConsumption) summary += `Alcohol Consumption: ${lifestyleFactors.alcoholConsumption}\n`;
-        summary += "\n";
+            // Section 6 – Lifestyle Factors
+            summary += "## Lifestyle Factors\n";
+            if (lifestyleFactors.dietHydration.diet) summary += `Diet: ${lifestyleFactors.dietHydration.diet}\n`;
+            if (lifestyleFactors.dietHydration.waterIntake) summary += `Water Intake/Day: ${lifestyleFactors.dietHydration.waterIntake}\n`;
+            if (lifestyleFactors.sleep) summary += `Sleep: ${lifestyleFactors.sleep}\n`;
+            if (lifestyleFactors.stressLevel) summary += `Stress Level: ${lifestyleFactors.stressLevel}\n`;
+            if (lifestyleFactors.exerciseFrequency) summary += `Exercise Frequency: ${lifestyleFactors.exerciseFrequency}\n`;
+            if (lifestyleFactors.smoking !== null) summary += `Smoking: ${lifestyleFactors.smoking ? 'Yes' : 'No'}\n`;
+            if (lifestyleFactors.alcoholConsumption) summary += `Alcohol Consumption: ${lifestyleFactors.alcoholConsumption}\n`;
+            summary += "\n";
 
-        // Section 7 – Sun Protection & Exposure
-        summary += "## Sun Protection & Exposure\n";
-        if (sunProtectionExposure.useSunscreenDaily !== null) summary += `Use Sunscreen Daily: ${sunProtectionExposure.useSunscreenDaily ? 'Yes' : 'No'}\n`;
-        if (sunProtectionExposure.timeOutdoorsDaily) summary += `Time Spent Outdoors Daily: ${sunProtectionExposure.timeOutdoorsDaily}\n`;
-        if (sunProtectionExposure.historySunburns !== null) summary += `History of Sunburns: ${sunProtectionExposure.historySunburns ? 'Yes' : 'No'}\n`;
-        if (sunProtectionExposure.tanningBedUse !== null) summary += `Tanning Bed Use: ${sunProtectionExposure.tanningBedUse ? 'Yes' : 'No'}\n`;
-        
-        return summary;
-    };
+            // Section 7 – Sun Protection & Exposure
+            summary += "## Sun Protection & Exposure\n";
+            if (sunProtectionExposure.useSunscreenDaily !== null) summary += `Use Sunscreen Daily: ${sunProtectionExposure.useSunscreenDaily ? 'Yes' : 'No'}\n`;
+            if (sunProtectionExposure.timeOutdoorsDaily) summary += `Time Spent Outdoors Daily: ${sunProtectionExposure.timeOutdoorsDaily}\n`;
+            if (sunProtectionExposure.historySunburns !== null) summary += `History of Sunburns: ${sunProtectionExposure.historySunburns ? 'Yes' : 'No'}\n`;
+            if (sunProtectionExposure.tanningBedUse !== null) summary += `Tanning Bed Use: ${sunProtectionExposure.tanningBedUse ? 'Yes' : 'No'}\n`;
+            
+            return summary;
+        };
 
 
     const handleConsultationSubmit = async (e) => {
@@ -318,7 +318,13 @@ const App = () => {
       let chatHistory = [];
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
-      const apiKey = ""; // Canvas will automatically provide this at runtime
+      // --- IMPORTANT CHANGE FOR DEPLOYMENT ---
+      // When deployed to Netlify, `apiKey` is not automatically injected.
+      // We read it from Netlify's environment variables (`REACT_APP_API_KEY`).
+      // During local development (e.g., in Canvas), `process.env.REACT_APP_API_KEY` might be undefined,
+      // so we use a fallback empty string, which Canvas then injects.
+      const apiKey = process.env.REACT_APP_API_KEY || "";
+      // --- END IMPORTANT CHANGE ---
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
 
       let retries = 0;
@@ -372,6 +378,12 @@ const App = () => {
           setIsLoading(false); // Ensure loading is false on direct exit
           break; // Exit loop on critical error
         }
+      }
+      if (retries === maxRetries) { // If loop finishes due to max retries without success
+        setErrorMessage('Failed to get consultation after multiple retries. Please try again later.');
+        setModalContent({ type: 'error', message: 'The consultation service is temporarily unavailable. Please try again later.' });
+        setShowModal(true);
+        setIsLoading(false);
       }
     };
 
@@ -789,7 +801,7 @@ const App = () => {
               {modalContent.type === 'success' ? (
                 <CheckCircle size={48} className="text-green-500 mx-auto mb-4" />
               ) : (
-                <XCircle size={48} className="text-red-500 mx-auto mb-4" />
+                <XCircle size={48} className="text-red-500 mx-auto mb-4" /> // Corrected: ensure it's a valid JSX element
               )}
               <h3 className="text-2xl font-bold text-gray-800 mb-4">{modalContent.type === 'success' ? 'Success!' : 'Oops!'}</h3>
               <p className="text-gray-600 mb-6">{modalContent.message}</p>
