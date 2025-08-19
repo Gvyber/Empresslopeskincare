@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; // Corrected this line
+import React, { useState } from 'react';
 
 // Main App Component
 const App = () => {
@@ -386,8 +386,11 @@ const App = () => {
       let chatHistory = [];
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
-      const apiKey = ""; // Canvas will automatically provide this at runtime
+      // THIS IS THE CRITICAL LINE THAT WAS FIXED
+      const apiKey = process.env.REACT_APP_API_KEY || ""; 
+      console.log("API Key being used (first 5 chars):", apiKey.substring(0, 5) + "...");
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+      console.log("API URL:", apiUrl);
 
       let retries = 0;
       const maxRetries = 5;
