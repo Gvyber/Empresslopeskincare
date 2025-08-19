@@ -87,8 +87,7 @@ const App = () => {
         <button onClick={() => setCurrentPage('blog')} className={`text-white hover:text-purple-200 transition-colors ${currentPage === 'blog' ? 'text-purple-200 font-semibold' : ''}`}>
           <BookIcon className="inline-block mr-1" size={20} /> Blog
         </button>
-        <button className="text-white hover:text-purple-200 transition-colors">About Us</button>
-        {/* Updated Contact button to navigate to new Contact Page */}
+        <button onClick={() => setCurrentPage('about')} className={`text-white hover:text-purple-200 transition-colors ${currentPage === 'about' ? 'text-purple-200 font-semibold' : ''}`}>About Us</button> {/* Added About Us button */}
         <button onClick={() => setCurrentPage('contact')} className="text-white hover:text-purple-200 transition-colors">Contact</button>
       </div>
       <div className="flex items-center space-x-4">
@@ -138,6 +137,14 @@ const App = () => {
       >
         <BookIcon className="inline-block mr-1" size={16} /> Blog
       </button>
+      <button
+        onClick={() => setCurrentPage('about')}
+        className={`flex-shrink-0 px-4 py-2 mx-1 text-sm font-medium rounded-full transition-all duration-200 ${
+          currentPage === 'about' ? 'bg-white text-purple-700 shadow-lg' : 'bg-transparent text-white hover:bg-white/20'
+        }`}
+      >
+        About Us
+      </button>
     </div>
   );
 
@@ -151,7 +158,7 @@ const App = () => {
       <div className="absolute inset-0 bg-black opacity-40"></div>
       <div className="relative z-10 text-white"> {/* Text content above the overlay */}
         <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          Personalized Skincare Journey Starts Here
+          Your Personalized Skincare Journey Starts Here {/* Corrected "Jurney" and added "Your" */}
         </h1>
         <p className="text-lg md:text-xl mb-8 max-w-3xl">
           Unlock your skin's full potential with expert advice and tailored recommendations.
@@ -223,7 +230,7 @@ const App = () => {
       useSunscreenDaily: null,
       timeOutdoorsDaily: '',
       historySunburns: null,
-      tanningBedUse: null,
+      // Removed tanningBedUse
     });
 
     const [aiResponse, setAiResponse] = useState('');
@@ -231,6 +238,8 @@ const App = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showModal, setShowModal] = useState(false);
     const [modalContent, setModalContent] = useState({ type: '', message: '' });
+    const [showFullPlan, setShowFullPlan] = useState(false); // New state for subscription
+
 
     // Handle checkbox changes for array states (generic)
     const handleArrayCheckboxChange = (stateVar, setStateVar, field, value) => {
@@ -366,7 +375,7 @@ const App = () => {
             if (sunProtectionExposure.useSunscreenDaily !== null) summary += `Use Sunscreen Daily: ${sunProtectionExposure.useSunscreenDaily ? 'Yes' : 'No'}\n`;
             if (sunProtectionExposure.timeOutdoorsDaily) summary += `Time Spent Outdoors Daily: ${sunProtectionExposure.timeOutdoorsDaily}\n`;
             if (sunProtectionExposure.historySunburns !== null) summary += `History of Sunburns: ${sunProtectionExposure.historySunburns ? 'Yes' : 'No'}\n`;
-            if (sunProtectionExposure.tanningBedUse !== null) summary += `Tanning Bed Use: ${sunProtectionExposure.tanningBedUse ? 'Yes' : 'No'}\n`;
+            // Removed tanningBedUse from summary as the option is removed from the form
             
             return summary;
         };
@@ -377,16 +386,29 @@ const App = () => {
       setIsLoading(true);
       setAiResponse('');
       setErrorMessage('');
+      setShowFullPlan(false); // Reset to false on new submission
 
       const skinProfileSummary = generateSkinProfileSummary();
 
-      const prompt = `Based on the following user skincare profile, please provide a personalized skincare routine and product ingredient recommendations. Structure your response clearly, including:\n\n1. AM Routine (Cleanser, Serum, Moisturizer, SPF)\n2. PM Routine (Cleanser, Treatment, Moisturizer)\n3. Specific Product Ingredient Recommendations (e.g., Hyaluronic Acid, Salicylic Acid, Vitamin C)\n4. General Skincare Tips\n\nKeep the recommendations concise and actionable. Prioritize ingredients and routine steps over specific brand names. Here is the user's profile:\n\n${skinProfileSummary}`;
+      // UPDATED PROMPT HERE TO INCLUDE CLARITY AND NIGERIAN CONTEXT
+      const prompt = `Based on the following user skincare profile, please provide a personalized skincare routine and product ingredient recommendations.
+        
+        **Important Guidelines for the Recommendation:**
+        1. **Clarity & Simplicity:** Use simple, easy-to-understand language. Avoid overly technical jargon. Explain any complex terms briefly if necessary.
+        2. **Nigerian Context:** Tailor recommendations to suit the Nigerian climate (e.g., humidity, heat, sun exposure) and common skin concerns prevalent in Nigeria (e.g., hyperpigmentation, acne due to humidity). Where applicable, suggest ingredients that are commonly available or affordable in Nigeria, or suitable local remedies, if appropriate.
+        3. **Routine Structure:**
+            * AM Routine (Cleanser, Serum, Moisturizer, SPF)
+            * PM Routine (Cleanser, Treatment, Moisturizer)
+        4. **Specific Product Ingredient Recommendations:** Suggest general ingredient types (e.g., Hyaluronic Acid, Salicylic Acid, Vitamin C), prioritizing ingredients relevant to the Nigerian context.
+        5. **General Skincare Tips:** Provide actionable tips suitable for the local environment.
+        6. **Conciseness:** Keep the recommendations concise and actionable. Aim for a response that can be roughly 10-15 lines long. Prioritize ingredients and routine steps over specific brand names.
+
+        Here is the user's profile:\n\n${skinProfileSummary}`;
 
 
       let chatHistory = [];
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
-      // THIS IS THE CRITICAL LINE THAT WAS FIXED
       const apiKey = process.env.REACT_APP_API_KEY || ""; 
       console.log("API Key being used (first 5 chars):", apiKey.substring(0, 5) + "...");
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
@@ -457,7 +479,7 @@ const App = () => {
             placeholder={placeholder}
             value={value}
             onChange={onChange}
-          ></textarea>
+          />
         ) : (
           <input
             type={type}
@@ -507,7 +529,7 @@ const App = () => {
             </div>
           ))}
         </div>
-        {selectedValues.includes('Other') || selectedValues.includes('Other:') ? ( // Check for both "Other" and "Other:"
+        {(selectedValues.includes('Other') || selectedValues.includes('Other:')) && ( // Check for both "Other" and "Other:"
           <InputField
             id={`${label}-other`}
             label="Please specify 'Other'"
@@ -515,7 +537,7 @@ const App = () => {
             onChange={onOtherChange}
             placeholder={otherPlaceholder || "Specify here..."}
           />
-        ) : null}
+        )}
       </div>
     );
 
@@ -625,7 +647,7 @@ const App = () => {
               />
               <CheckboxGroup
                 label="Current Skin Condition:"
-                options={['Hydrated', 'Dehydrated', 'Inflamed', 'Acne-prone', 'Congested / Clogged pores', 'Flaky / Rough texture', 'Other']}
+                options={['Hydrated', 'Dehydrated', 'Inflamed', 'Acne-prone', 'Congested / Clogged pores', 'Flaky / Rough texture', 'My skin is normal', 'Other']}
                 selectedValues={skinTypeCondition.currentSkinCondition}
                 onChange={(value) => handleArrayCheckboxChange(skinTypeCondition, setSkinTypeCondition, 'currentSkinCondition', value)}
                 otherValue={skinTypeCondition.currentSkinConditionOther}
@@ -649,7 +671,7 @@ const App = () => {
               {/* Morning Routine Checkboxes */}
               <CheckboxGroup
                 label="Morning routine (check all that apply):"
-                options={['Cleanser', 'Toner', 'Serum', 'Moisturizer', 'Sunscreen']}
+                options={['Cleanser', 'Toner', 'Serum', 'Moisturizer', 'Sunscreen', 'None']}
                 selectedValues={currentSkincareRoutine.morningRoutine}
                 onChange={(value) => handleArrayCheckboxChange(currentSkincareRoutine, setCurrentSkincareRoutine, 'morningRoutine', value)}
                 otherValue={''} // No "Other" for these now
@@ -658,7 +680,7 @@ const App = () => {
               {/* Evening Routine Checkboxes */}
               <CheckboxGroup
                 label="Evening routine (check all that apply):"
-                options={['Cleanser', 'Toner', 'Serum', 'Moisturizer', 'Treatment product (e.g., retinol, acids)']}
+                options={['Cleanser', 'Toner', 'Serum', 'Moisturizer', 'Treatment product (e.g., retinol, acids)', 'None']}
                 selectedValues={currentSkincareRoutine.eveningRoutine}
                 onChange={(value) => handleArrayCheckboxChange(currentSkincareRoutine, setCurrentSkincareRoutine, 'eveningRoutine', value)}
                 otherValue={''} // No "Other" for these now
@@ -723,21 +745,21 @@ const App = () => {
 
           {/* Section 6 – Lifestyle Factors */}
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="2xl font-semibold text-gray-800 mb-4">Section 6 – Lifestyle Factors</h3>
+            <h3 className="text-2xl font-semibold text-gray-800 mb-4">Section 6 – Lifestyle Factors</h3>
             <div className="space-y-6">
               <SelectField
                 id="diet"
                 label="Diet & hydration (Diet):"
                 value={lifestyleFactors.dietHydration.diet}
                 onChange={(e) => setLifestyleFactors(prev => ({ ...prev, dietHydration: { ...prev.dietHydration, diet: e.target.value } }))}
-                options={['Balanced diet', 'High sugar/fats', 'Vegetarian/Vegan']}
+                options={['Balanced (fruits, vegetables, lean protein)', 'High sugar/fats (processed foods, fried foods)', 'Vegetarian/Vegan', 'Low Carb', 'Keto', 'Other']}
               />
               <SelectField
                 id="waterIntake"
                 label="Water intake/day:"
                 value={lifestyleFactors.dietHydration.waterIntake}
                 onChange={(e) => setLifestyleFactors(prev => ({ ...prev, dietHydration: { ...prev.dietHydration, waterIntake: e.target.value } }))}
-                options={['<1L', '1–2L', '2–3L', '3L+']}
+                options={['<1L (less than 4 cups)', '1–2L (4-8 cups)', '2–3L (8-12 cups)', '3L+ (12+ cups)']}
               />
               <SelectField
                 id="sleep"
@@ -802,13 +824,7 @@ const App = () => {
                 selectedValue={sunProtectionExposure.historySunburns === true ? 'Yes' : sunProtectionExposure.historySunburns === false ? 'No' : ''}
                 onChange={(value) => setSunProtectionExposure({ ...sunProtectionExposure, historySunburns: value === 'Yes' ? true : false })}
               />
-              <RadioGroup
-                label="Tanning bed use:"
-                name="tanningBedUse"
-                options={['Yes', 'No']}
-                selectedValue={sunProtectionExposure.tanningBedUse === true ? 'Yes' : sunProtectionExposure.tanningBedUse === false ? 'No' : ''}
-                onChange={(value) => setSunProtectionExposure({ ...sunProtectionExposure, tanningBedUse: value === 'Yes' ? true : false })}
-              />
+              {/* Removed Tanning bed use option */}
             </div>
           </div>
 
@@ -838,10 +854,29 @@ const App = () => {
         {aiResponse && (
           <div className="mt-8 p-6 bg-purple-50 rounded-lg shadow-inner border border-purple-200">
             <h3 className="text-2xl font-bold text-purple-800 mb-4">Your Personalized Skincare Plan:</h3>
-            <div
-              className="prose max-w-none text-gray-800"
-              dangerouslySetInnerHTML={{ __html: aiResponse.replace(/\n/g, '<br />').replace(/\*/g, '').replace(/#/g, '') }}
-            />
+            <div className="prose max-w-none text-gray-800">
+              {/* Display truncated or full plan based on showFullPlan state */}
+              {!showFullPlan ? (
+                <>
+                  <p>{aiResponse.split('\n').slice(0, 5).join('\n')}</p> {/* Show first 5 lines */}
+                  <div className="text-center mt-6">
+                    <p className="mb-4 text-purple-700 font-semibold">Unlock the full personalized skincare plan!</p>
+                    <button
+                      onClick={() => {
+                        setShowFullPlan(true);
+                        setModalContent({ type: 'info', message: 'Thank you for your "payment"! Enjoy your full personalized skincare plan.' });
+                        setShowModal(true);
+                      }}
+                      className="bg-green-600 text-white px-8 py-4 rounded-full text-lg font-bold hover:bg-green-700 transition-colors duration-300 shadow-md transform hover:scale-105"
+                    >
+                      Subscribe to View Full Plan (Mock Payment)
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div dangerouslySetInnerHTML={{ __html: aiResponse.replace(/\n/g, '<br />').replace(/\*\*/g, '<b>').replace(/\*/g, '') }} />
+              )}
+            </div>
           </div>
         )}
 
@@ -854,17 +889,14 @@ const App = () => {
               ) : (
                 <XCircleIcon size={48} className="text-red-500 mx-auto mb-4" />
               )}
-              <h3 className="2xl font-bold text-gray-800 mb-4">{modalContent.type === 'success' ? 'Success!' : 'Oops!'}</h3>
+              <h3 className="text-2xl font-bold text-gray-800 mb-4">{modalContent.type === 'success' ? 'Success!' : modalContent.type === 'info' ? 'Plan Unlocked!' : 'Oops!'}</h3>
               <p className="text-gray-600 mb-6">{modalContent.message}</p>
               <button
                 onClick={() => {
                   setShowModal(false);
-                  if (modalContent.type === 'success') {
-                    // Optionally scroll to AI response or reset form
-                  }
                 }}
                 className={`w-full py-3 rounded-full text-white font-bold text-lg transition-colors duration-300 ${
-                  modalContent.type === 'success' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
+                  modalContent.type === 'success' || modalContent.type === 'info' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
                 }`}
               >
                 Close
@@ -888,24 +920,24 @@ const App = () => {
     const blogPosts = [
       {
         id: 'blog1',
-        title: 'The Ultimate Guide to Hydrating Your Skin',
+        title: 'Simple Ways to Hydrate Your Skin in Nigeria',
         date: 'August 10, 2025',
-        excerpt: 'Discover the best ingredients and tips for keeping your skin plump and moisturized all year round. Hydration is key to a healthy skin barrier...',
-        content: 'Hydration is fundamental for healthy, glowing skin. Dehydrated skin can look dull, feel tight, and even exacerbate the appearance of fine lines. To combat this, focus on ingredients like Hyaluronic Acid, Glycerin, and Ceramides. Hyaluronic Acid acts like a sponge, drawing moisture from the air into your skin. Glycerin is another powerful humectant, while Ceramides help to strengthen your skin\'s natural barrier, preventing moisture loss. Remember to drink plenty of water and use a gentle, hydrating cleanser to avoid stripping your skin\'s natural oils. Layering your products, starting with the thinnest consistency, can also help to lock in moisture effectively.'
+        excerpt: 'Keeping your skin hydrated is super important, especially in Nigeria\'s weather. Learn easy tips and common ingredients to keep your skin fresh and plump. Hydrated skin means a stronger skin barrier, which is your skin\'s natural shield!',
+        content: 'Good hydration is key for healthy, glowing skin in our Nigerian climate. When your skin is dry, it can look dull and even feel tight. To fix this, look for products with ingredients like **Glycerin** (often found in many products) and **Hyaluronic Acid**. These act like sponges, pulling moisture from the air and into your skin. Also, consider **Aloe Vera gel**, which is easily available and very hydrating. Don\'t forget to drink plenty of water throughout the day! And when washing your face, use gentle cleansers so you don\'t strip your skin of its natural oils. Layering your products, from lightest to heaviest, helps seal in moisture effectively.'
       },
       {
         id: 'blog2',
-        title: 'Understanding Vitamin C for Brighter Skin',
+        title: 'Unlock Brighter Skin: The Power of Vitamin C',
         date: 'July 25, 2025',
-        excerpt: 'Learn how Vitamin C can transform your complexion, fade dark spots, and protect against environmental damage. It\'s a powerful antioxidant...',
-        content: 'Vitamin C is a powerhouse ingredient renowned for its brightening and protective benefits. As a potent antioxidant, it helps to neutralize free radicals caused by UV exposure and pollution, which can lead to premature aging. Beyond protection, Vitamin C is crucial for collagen synthesis, helping to maintain skin elasticity and firmness. It also effectively inhibits melanin production, making it excellent for fading hyperpigmentation, sun spots, and post-inflammatory marks, leading to a more even and radiant skin tone. When incorporating Vitamin C, look for stable forms like L-Ascorbic Acid or derivatives, and store products in a cool, dark place to maintain their efficacy.'
+        excerpt: 'Want brighter, more even skin? Vitamin C is your friend! It helps fade dark spots, protects from sun damage, and gives your complexion a lovely glow. It\'s a powerful helper for your skin.',
+        content: 'Vitamin C is truly a star ingredient for brighter skin. It\'s a strong **antioxidant** that helps fight off damage from the sun and pollution, which can make your skin age faster. Beyond protection, Vitamin C also helps your skin make more **collagen**, which keeps it firm and bouncy. It\'s also fantastic for fading **hyperpigmentation** (dark spots) and evening out your skin tone, giving you a radiant look. When buying Vitamin C products, try to find ones in dark bottles or tubes, as light can make it less effective. Use it consistently to see the best results!'
       },
       {
         id: 'blog3',
-        title: 'Acne Solutions: Beyond Spot Treatments',
+        title: 'Managing Acne: Simple Steps for Clearer Skin',
         date: 'July 1, 2025',
-        excerpt: 'Explore comprehensive strategies for managing acne, from gentle cleansing to targeted treatments and lifestyle adjustments. It\'s more than just a pimple...',
-        content: 'Managing acne effectively often requires a holistic approach beyond just spot treatments. Start with a gentle, non-foaming cleanser to avoid irritating inflamed inflamed skin. Incorporate active ingredients like Salicylic Acid (BHA) for oil control and exfoliation within pores, or Benzoyl Peroxide for its antibacterial properties. For more persistent acne, retinoids can be highly effective in promoting cell turnover and preventing clogged pores. Beyond topicals, consider lifestyle factors suchs as diet, stress management, and ensuring your pillowcases are clean. Consistency is key, and it\'s often beneficial to consult with a dermatologist for severe or persistent cases.'
+        excerpt: 'Dealing with breakouts can be tough, but it\'s more than just spot treating pimples. Discover simple daily habits and key ingredients that can help you manage acne and achieve clearer skin, no matter the humidity.',
+        content: 'Handling acne often means more than just dabbing on a spot treatment. Start with a **gentle cleanser** that doesn\'t foam too much, especially in our humid environment, to avoid irritating your skin. Look for active ingredients like **Salicylic Acid (BHA)**, which helps clear out pores, or **Benzoyl Peroxide**, which fights acne-causing bacteria. For stubborn breakouts, consult a dermatologist for stronger treatments. Remember that simple lifestyle changes can also help: drink enough water, manage stress, and make sure your pillowcases are always clean. Consistency and patience are your best tools for clearer skin.'
       }
     ];
 
@@ -963,6 +995,32 @@ const App = () => {
     );
   };
 
+  // New AboutUsPage Component
+  const AboutUsPage = ({ setCurrentPage }) => {
+    return (
+      <div className="max-w-2xl mx-auto p-6 md:p-8 bg-white rounded-xl shadow-lg my-8 text-center">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6">About EmpressLope Beauty Shop</h2>
+        <p className="text-lg text-gray-700 mb-4">
+          EmpressLope Beauty Shop is for the **Stylish, Sophisticated Women**. Here, beauty meets confidence and individuality is celebrated.
+        </p>
+        <p className="text-lg text-gray-700 mb-4">
+          We offer skincare consultation, personalized recommendations, and products carefully sourced to provide tailored care.
+          We ensure every client feels and looks their dream.
+        </p>
+        <p className="text-lg text-gray-700 mb-6">
+          Every visit is more than just a consultation & shopping experience; it’s a touch of elegance and empowerment.
+        </p>
+        <button
+          onClick={() => setCurrentPage('home')}
+          className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
+        >
+          <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
+        </button>
+      </div>
+    );
+  };
+
+
   // New ContactPage Component
   const ContactPage = ({ setCurrentPage }) => {
     return (
@@ -1016,6 +1074,7 @@ const App = () => {
       {currentPage === 'home' && <HomePage setCurrentPage={setCurrentPage} />}
       {currentPage === 'consultation' && <ConsultationPage setCurrentPage={setCurrentPage} />}
       {currentPage === 'blog' && <BlogPage setCurrentPage={setCurrentPage} />}
+      {currentPage === 'about' && <AboutUsPage setCurrentPage={setCurrentPage} />} {/* Render AboutUsPage */}
       {currentPage === 'contact' && <ContactPage setCurrentPage={setCurrentPage} />} {/* Render ContactPage */}
     </div>
   );
