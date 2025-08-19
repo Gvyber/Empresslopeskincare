@@ -378,6 +378,9 @@ const App = () => {
       setAiResponse('');
       setErrorMessage('');
 
+      // Moved skinProfileSummary declaration BEFORE its first use
+      const skinProfileSummary = generateSkinProfileSummary(); // <--- Moved this line
+
       // Added console logs for debugging
       console.log("handleConsultationSubmit triggered.");
       console.log("Skin Profile Summary:", skinProfileSummary);
