@@ -380,8 +380,6 @@ const App = () => {
 
       // Added console logs for debugging
       console.log("handleConsultationSubmit triggered.");
-
-      const skinProfileSummary = generateSkinProfileSummary();
       console.log("Skin Profile Summary:", skinProfileSummary);
 
       const prompt = `Based on the following user skincare profile, please provide a personalized skincare routine and product ingredient recommendations. Structure your response clearly, including:\n\n1. AM Routine (Cleanser, Serum, Moisturizer, SPF)\n2. PM Routine (Cleanser, Treatment, Moisturizer)\n3. Specific Product Ingredient Recommendations (e.g., Hyaluronic Acid, Salicylic Acid, Vitamin C)\n4. General Skincare Tips\n\nKeep the recommendations concise and actionable. Prioritize ingredients and routine steps over specific brand names. Here is the user's profile:\n\n${skinProfileSummary}`;
@@ -391,7 +389,7 @@ const App = () => {
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
       const apiKey = process.env.REACT_APP_API_KEY || "";
-      console.log("API Key being used (first 5 chars):", apiKey.substring(0, 5) + "..."); // Log partial key for security
+      console.log("API Key being used (first 5 chars):", apiKey.substring(0, 5) + "...");
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
       console.log("API URL:", apiUrl);
 
@@ -440,13 +438,13 @@ const App = () => {
             break; // Exit loop, no retries for malformed response
           }
         } catch (error) {
-          console.error("Fetch error:", error); // Log the actual fetch error
+          console.error("Fetch error:", error);
           setErrorMessage(`Failed to get consultation: ${error.message}`);
           setModalContent({ type: 'error', message: `An error occurred: ${error.message}` });
           setShowModal(true);
           break; // Exit loop on critical error
         } finally {
-          setIsLoading(false); // Ensure loading is false on direct exit or after all retries
+          setIsLoading(false);
           console.log("setIsLoading(false) called in finally block.");
         }
       }
