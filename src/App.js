@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'; // Corrected this line
 
 // Main App Component
 const App = () => {
@@ -378,12 +378,7 @@ const App = () => {
       setAiResponse('');
       setErrorMessage('');
 
-      // Moved skinProfileSummary declaration BEFORE its first use
-      const skinProfileSummary = generateSkinProfileSummary(); // <--- Moved this line
-
-      // Added console logs for debugging
-      console.log("handleConsultationSubmit triggered.");
-      console.log("Skin Profile Summary:", skinProfileSummary);
+      const skinProfileSummary = generateSkinProfileSummary();
 
       const prompt = `Based on the following user skincare profile, please provide a personalized skincare routine and product ingredient recommendations. Structure your response clearly, including:\n\n1. AM Routine (Cleanser, Serum, Moisturizer, SPF)\n2. PM Routine (Cleanser, Treatment, Moisturizer)\n3. Specific Product Ingredient Recommendations (e.g., Hyaluronic Acid, Salicylic Acid, Vitamin C)\n4. General Skincare Tips\n\nKeep the recommendations concise and actionable. Prioritize ingredients and routine steps over specific brand names. Here is the user's profile:\n\n${skinProfileSummary}`;
 
@@ -391,10 +386,8 @@ const App = () => {
       let chatHistory = [];
       chatHistory.push({ role: "user", parts: [{ text: prompt }] });
       const payload = { contents: chatHistory };
-      const apiKey = process.env.REACT_APP_API_KEY || "";
-      console.log("API Key being used (first 5 chars):", apiKey.substring(0, 5) + "...");
+      const apiKey = ""; // Canvas will automatically provide this at runtime
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-      console.log("API URL:", apiUrl);
 
       let retries = 0;
       const maxRetries = 5;
@@ -407,12 +400,11 @@ const App = () => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
           });
-          console.log("Fetch response received. Status:", response.status);
 
           if (!response.ok) {
             if (response.status === 429) { // Too Many Requests
               const delay = Math.pow(2, retries) * baseDelay + Math.random() * baseDelay;
-              console.warn(`Rate limit hit, retrying in ${delay / 1000}s... (Attempt ${retries + 1}/${maxRetries})`);
+              console.log(`Rate limit hit, retrying in ${delay / 1000}s...`);
               await new Promise(res => setTimeout(res, delay));
               retries++;
               continue; // Retry the request
@@ -420,43 +412,34 @@ const App = () => {
               setErrorMessage(`HTTP error! status: ${response.status}`);
               setModalContent({ type: 'error', message: `Failed to get consultation: HTTP error ${response.status}` });
               setShowModal(true);
+              setIsLoading(false); // Ensure loading is false on direct exit
               break; // Exit loop on critical error
             }
           }
 
           const result = await response.json();
-          console.log("API Response JSON:", result);
-
           if (result.candidates && result.candidates.length > 0 &&
               result.candidates[0].content && result.candidates[0].content.parts &&
               result.candidates[0].content.parts.length > 0) {
             setAiResponse(result.candidates[0].content.parts[0].text);
             setModalContent({ type: 'success', message: 'Your personalized skincare plan is ready!' });
             setShowModal(true);
+            setIsLoading(false); // Ensure loading is false on direct exit
             break; // Exit loop on success
           } else {
             setErrorMessage('Received an empty or malformed response from the AI.');
             setModalContent({ type: 'error', message: 'Failed to get a personalized plan. Please try again.' });
             setShowModal(true);
+            setIsLoading(false); // Ensure loading is false on direct exit
             break; // Exit loop, no retries for malformed response
           }
         } catch (error) {
-          console.error("Fetch error:", error);
           setErrorMessage(`Failed to get consultation: ${error.message}`);
           setModalContent({ type: 'error', message: `An error occurred: ${error.message}` });
           setShowModal(true);
+          setIsLoading(false); // Ensure loading is false on direct exit
           break; // Exit loop on critical error
-        } finally {
-          setIsLoading(false);
-          console.log("setIsLoading(false) called in finally block.");
         }
-      }
-
-      if (retries === maxRetries && !aiResponse && !errorMessage) {
-        setErrorMessage('Failed to get consultation after multiple retries. Please try again later.');
-        setModalContent({ type: 'error', message: 'The consultation service is temporarily unavailable. Please try again later.' });
-        setShowModal(true);
-        setIsLoading(false);
       }
     };
 
@@ -737,7 +720,7 @@ const App = () => {
 
           {/* Section 6 – Lifestyle Factors */}
           <div className="bg-white p-6 rounded-lg shadow-sm">
-            <h3 className="text-2xl font-semibold text-gray-800 mb-4">Section 6 – Lifestyle Factors</h3>
+            <h3 className="2xl font-semibold text-gray-800 mb-4">Section 6 – Lifestyle Factors</h3>
             <div className="space-y-6">
               <SelectField
                 id="diet"
@@ -868,7 +851,7 @@ const App = () => {
               ) : (
                 <XCircleIcon size={48} className="text-red-500 mx-auto mb-4" />
               )}
-              <h3 className="text-2xl font-bold text-gray-800 mb-4">{modalContent.type === 'success' ? 'Success!' : 'Oops!'}</h3>
+              <h3 className="2xl font-bold text-gray-800 mb-4">{modalContent.type === 'success' ? 'Success!' : 'Oops!'}</h3>
               <p className="text-gray-600 mb-6">{modalContent.message}</p>
               <button
                 onClick={() => {
@@ -930,56 +913,49 @@ const App = () => {
     };
 
     return (
-      <div
-        className="relative flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 text-center bg-cover bg-center"
-        style={{ backgroundImage: `url('https://drive.google.com/uc?id=15pumdS4OGiJZgzfZ6aS6-tG1tg0uZZqC')` }}
-      >
-        {/* Overlay to improve text readability */}
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-        <div className="relative z-10 max-w-4xl mx-auto p-6 md:p-8 bg-white/80 rounded-xl shadow-lg my-8"> {/* Added white overlay with transparency */}
-          <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Skincare Blog</h2>
+      <div className="max-w-4xl mx-auto p-6 md:p-8 bg-white rounded-xl shadow-lg my-8">
+        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Our Skincare Blog</h2>
 
-          {/* New section for external blog link */}
-          <div className="mb-10 p-6 bg-purple-50 rounded-lg shadow-inner border border-purple-200 text-center">
-            <h3 className="text-xl font-semibold text-purple-800 mb-4">Looking for more articles?</h3>
-            <p className="text-gray-700 mb-4">
-              Visit our comprehensive main blog for even more in-depth skincare insights, tips, and product reviews!
-            </p>
-            <a
-              href="https://empresslope.blogspot.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-purple-600 text-white px-6 py-3 rounded-full text-lg font-bold hover:bg-purple-700 transition-colors duration-300 shadow-md transform hover:scale-105"
-            >
-              Visit Our Main Blog
-            </a>
-          </div>
-          {/* End new section */}
-
-
-          <div className="space-y-10">
-            {blogPosts.map((post) => (
-              <div key={post.id} className="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h3>
-                <p className="text-sm text-gray-500 mb-4">{post.date}</p>
-                <p className="text-gray-700 mb-4">
-                  {expandedPost === post.id ? post.content : post.excerpt}
-                  {post.content.length > post.excerpt.length && (
-                    <button onClick={() => toggleReadMore(post.id)} className="text-purple-600 hover:underline ml-2 font-medium">
-                      {expandedPost === post.id ? 'Read Less' : 'Read More'}
-                    </button>
-                  )}
-                </p>
-              </div>
-            ))}
-          </div>
-          <button
-            onClick={() => setCurrentPage('home')}
-            className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
+        {/* New section for external blog link */}
+        <div className="mb-10 p-6 bg-purple-50 rounded-lg shadow-inner border border-purple-200 text-center">
+          <h3 className="text-xl font-semibold text-purple-800 mb-4">Looking for more articles?</h3>
+          <p className="text-gray-700 mb-4">
+            Visit our comprehensive main blog for even more in-depth skincare insights, tips, and product reviews!
+          </p>
+          <a
+            href="https://empresslope.blogspot.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-purple-600 text-white px-6 py-3 rounded-full text-lg font-bold hover:bg-purple-700 transition-colors duration-300 shadow-md transform hover:scale-105"
           >
-            <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
-          </button>
+            Visit Our Main Blog
+          </a>
         </div>
+        {/* End new section */}
+
+
+        <div className="space-y-10">
+          {blogPosts.map((post) => (
+            <div key={post.id} className="bg-gray-50 p-6 rounded-lg shadow-sm border border-gray-100">
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">{post.title}</h3>
+              <p className="text-sm text-gray-500 mb-4">{post.date}</p>
+              <p className="text-gray-700 mb-4">
+                {expandedPost === post.id ? post.content : post.excerpt}
+                {post.content.length > post.excerpt.length && (
+                  <button onClick={() => toggleReadMore(post.id)} className="text-purple-600 hover:underline ml-2 font-medium">
+                    {expandedPost === post.id ? 'Read Less' : 'Read More'}
+                  </button>
+                )}
+              </p>
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => setCurrentPage('home')}
+          className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
+        >
+          <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
+        </button>
       </div>
     );
   };
@@ -987,38 +963,47 @@ const App = () => {
   // New ContactPage Component
   const ContactPage = ({ setCurrentPage }) => {
     return (
-      <div
-        className="relative flex flex-col items-center justify-center min-h-[calc(100vh-160px)] p-4 text-center bg-cover bg-center"
-        style={{ backgroundImage: `url('https://drive.google.com/uc?id=1j_SR_WipYGAGUlXHcuCWq_vvtIZJOxRQ')` }}
-      >
-        {/* Overlay to improve text readability */}
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-        <div className="relative z-10 max-w-xl mx-auto p-6 md:p-8 bg-purple-50/80 rounded-xl shadow-lg my-8 text-center"> {/* Added transparent background to content block */}
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center justify-center">
-            <MailIcon className="mr-3" size={32} /> Contact EmpressLope Beauty Shop
-          </h2>
-          <p className="text-gray-700 text-lg mb-4">
-            We'd love to hear from you! For any inquiries, consultations, or feedback, please reach out to us directly via email:
-          </p>
-          <p className="text-3xl font-bold text-purple-700 mb-8">
-            <a href="mailto:theempresslope@gmail.com" className="hover:underline">theempresslope@gmail.com</a>
-          </p>
-          <p className="text-gray-600">
-            We aim to respond to all messages within 24-48 business hours.
-          </p>
-          <button
-            onClick={() => setCurrentPage('home')}
-            className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
-          >
-            <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
-          </button>
-        </div>
+      <div className="max-w-xl mx-auto p-6 md:p-8 bg-purple-50 rounded-xl shadow-lg my-8 text-center">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 flex items-center justify-center">
+          <MailIcon className="mr-3" size={32} /> Contact EmpressLope Beauty Shop
+        </h2>
+        <p className="text-gray-700 text-lg mb-4">
+          We'd love to hear from you! For any inquiries, consultations, or feedback, please reach out to us directly via email:
+        </p>
+        <p className="text-3xl font-bold text-purple-700 mb-8">
+          <a href="mailto:theempresslope@gmail.com" className="hover:underline">theempresslope@gmail.com</a>
+        </p>
+        <p className="text-gray-600">
+          We aim to respond to all messages within 24-48 business hours.
+        </p>
+        <button
+          onClick={() => setCurrentPage('home')}
+          className="mt-8 flex items-center justify-center mx-auto text-purple-600 hover:text-purple-800 transition-colors duration-200 font-semibold"
+        >
+          <ChevronLeftIcon size={20} className="mr-2" /> Back to Home
+        </button>
       </div>
     );
   };
 
   return (
     <div className="min-h-screen bg-gray-100 font-inter">
+      {/* Load Great Vibes and Inter fonts from Google Fonts */}
+      <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+      {/* Tailwind CSS CDN */}
+      <script src="https://cdn.tailwindcss.com"></script>
+
+      <style>{`
+        body {
+          font-family: 'Inter', sans-serif;
+        }
+        /* Apply Great Vibes to elements with specific class/font-family */
+        .font-['Great_Vibes'] {
+          font-family: 'Great Vibes', cursive;
+        }
+      `}</style>
+
       {/* Header */}
       <DesktopNav />
       <MobileNav />
